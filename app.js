@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var mongoose = require("mongoose");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -41,5 +42,12 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+// connect db
+const dbPath = process.env.MONGO_URI || "mongodb://localhost:27017/jubo";
+mongoose
+  .connect(dbPath)
+  .then(() => console.log(`db connect success: ${dbPath}`))
+  .catch((err) => console.log(err));
 
 module.exports = app;

@@ -12,6 +12,13 @@ var ordersRouter = require("./routes/orders");
 
 var app = express();
 
+// connect db
+const dbPath = process.env.MONGO_URI || "mongodb://localhost:27017/jubo";
+mongoose
+  .connect(dbPath)
+  .then(() => console.log(`db connect success: ${dbPath}`))
+  .catch((err) => console.log(err));
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -42,12 +49,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
-// connect db
-const dbPath = process.env.MONGO_URI || "mongodb://localhost:27017/jubo";
-mongoose
-  .connect(dbPath)
-  .then(() => console.log(`db connect success: ${dbPath}`))
-  .catch((err) => console.log(err));
 
 module.exports = app;

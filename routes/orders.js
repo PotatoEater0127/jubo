@@ -1,19 +1,20 @@
 var express = require("express");
 var router = express.Router();
-
-/* GET orders listing. */
-router.get("/", function (req, res, next) {
-  res.send("GET /orders response");
-});
+const { createOrder, updateOrder } = require("../controllers/orderController");
 
 /* POST create an order. */
-router.post("/", function (req, res, next) {
-  res.send("POST /orders response");
+router.post("/", async function (req, res) {
+  const { patientId, message } = req.body;
+  const newOrder = await createOrder({ patientId, message });
+  res.json(newOrder?.id);
 });
 
 /* PATCH update an order. */
-router.patch("/", function (req, res, next) {
-  res.send("PATCH /orders response");
+router.patch("/:orderId", async function (req, res) {
+  const { message } = req.body;
+  const { orderId } = req.params;
+  const updatedOrder = await updateOrder({ message, orderId });
+  res.json(updatedOrder?.id);
 });
 
 module.exports = router;

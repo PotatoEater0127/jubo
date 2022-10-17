@@ -7,7 +7,7 @@ import OrderListDialog from "./components/OrderListDialog";
 import modeEnum from "../src/components/OrderListDialog/modeEnum";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-// import "./App.css";
+import Divider from "@mui/material/Divider";
 
 function App() {
   const openId = useRef(0);
@@ -16,7 +16,8 @@ function App() {
   const [orders, setOrders] = useState([]);
   useEffect(() => {
     if (!isOpen) {
-      // Increment id each time modal closes, forcing OrderListDialog remount and clean states
+      // Increment id each time modal closes, forcing OrderListDialog remount and clean states:
+      // https://github.com/mui/material-ui/issues/16325#issuecomment-905876236
       openId.current = openId.current + 1;
     }
   }, [isOpen]);
@@ -58,14 +59,15 @@ function App() {
       style={{ background: "linear-gradient(135deg, #7EE8FA, #EEC0C6)" }}
     >
       <Container maxWidth={"sm"}>
-        <Typography
-          variant="h1"
-          align="center"
-          sx={{ fontSize: "2rem", mb: "8px" }}
-        >
-          病患名單
-        </Typography>
-        <Paper elevation={1}>
+        <Paper elevation={1} sx={{ pt: "16px" }}>
+          <Typography
+            variant="h1"
+            align="center"
+            sx={{ fontSize: "2rem", mb: "8px" }}
+          >
+            病患名單
+          </Typography>
+          <Divider variant="middle" />
           <PatientList onItemClick={handleListItemClick} />
           <OrderListDialog
             key={openId.current}

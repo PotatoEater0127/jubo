@@ -17,6 +17,7 @@ const { VIEW, EDIT, ADD } = modeEnum;
 
 export default function OrderListDialog(props) {
   const { title, onClose, onSubmit, isOpen, orders } = props;
+  // 目前選取到的醫囑id
   const [orderId, setOrderId] = useState(null);
   const [mode, setMode] = useState(VIEW);
   const [isTouched, setIsTouched] = useState(false);
@@ -117,12 +118,7 @@ export default function OrderListDialog(props) {
       </DialogContent>
       {mode !== VIEW && (
         <DialogActions>
-          <Button
-            onClick={handleCancel}
-            onMouseDown={(e) => e.preventDefault()} // 為了阻止input field的onblur被觸發而導致的驗證失敗提示出現
-          >
-            取消
-          </Button>
+          <Button onClick={handleCancel}>取消</Button>
           <Button onClick={handleSubmit} disabled={isValidationError}>
             確定
           </Button>

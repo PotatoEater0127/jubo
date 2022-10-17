@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 function App() {
   const openId = useRef(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [patientId, setPatientId] = useState(null);
+  const [patient, setPatient] = useState(null);
   const [orders, setOrders] = useState([]);
   useEffect(() => {
     if (!isOpen) {
@@ -22,11 +22,11 @@ function App() {
   }, [isOpen]);
 
   // 點擊patient item
-  const handleListItemClick = (item) => {
+  const handleListItemClick = (patient) => {
     setIsOpen(true);
-    setPatientId(item.patientId);
+    setPatient(patient);
     axios
-      .get(`/patients/${item.patientId}/orders`)
+      .get(`/patients/${patient.id}/orders`)
       .then((res) => res.data)
       .then((orders) => setOrders(orders));
   };
@@ -35,7 +35,7 @@ function App() {
     let request = Promise.resolve();
     if (mode === modeEnum.ADD) {
       // 新增醫囑
-      request = axios.post("/orders", { message, patientId });
+      request = axios.post("/orders", { message, patientId: patient?.id });
     } else if (mode === modeEnum.EDIT) {
       // 修改醫囑
       request = axios.patch(`/orders/${orderId}`, { message });
@@ -44,7 +44,7 @@ function App() {
     // 取得最新的醫囑資料
     request.finally(() =>
       axios
-        .get(`/patients/${patientId}/orders`)
+        .get(`/patients/${patient?.id}/orders`)
         .then((res) => res.data)
         .then((orders) => setOrders(orders))
     );
@@ -61,9 +61,9 @@ function App() {
         <Typography
           variant="h1"
           align="center"
-          sx={{ fontSize: "2rem", mb: "16px" }}
+          sx={{ fontSize: "2rem", mb: "8px" }}
         >
-          患者名單
+          病患名單
         </Typography>
         <Paper elevation={1}>
           <PatientList onItemClick={handleListItemClick} />
@@ -73,6 +73,7 @@ function App() {
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             onSubmit={handleSubmit}
+            title={`醫囑列表 - ${patient?.name}`}
           />
         </Paper>
       </Container>

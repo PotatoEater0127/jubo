@@ -16,7 +16,7 @@ import modeEnum from "./modeEnum";
 const { VIEW, EDIT, ADD } = modeEnum;
 
 export default function OrderListDialog(props) {
-  const { onClose, onSubmit, isOpen, orders } = props;
+  const { title, onClose, onSubmit, isOpen, orders } = props;
   const [orderId, setOrderId] = useState(null);
   const [mode, setMode] = useState(VIEW);
   const [isTouched, setIsTouched] = useState(false);
@@ -71,10 +71,9 @@ export default function OrderListDialog(props) {
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth={true}>
       <DialogTitle>
-        醫囑列表
+        {title}
         {mode === VIEW && (
           <Button
-            variant="outlined"
             startIcon={<AddCircleIcon />}
             sx={buttonStyle}
             onClick={() => setMode(ADD)}
@@ -84,7 +83,7 @@ export default function OrderListDialog(props) {
         )}
       </DialogTitle>
       <DialogContent>
-        <List sx={{ pt: 0 }}>
+        <List sx={{ pt: 0, overflow: "scroll", height: "50vh" }}>
           {orders.map((order) => (
             <ListItem
               button
@@ -106,16 +105,24 @@ export default function OrderListDialog(props) {
               {mode === EDIT && orderId === order.id ? (
                 inputField
               ) : (
-                <ListItemText primary={order.message} />
+                <ListItemText
+                  primary={order.message}
+                  sx={{ overflow: "hidden", mr: "16px" }}
+                />
               )}
             </ListItem>
           ))}
-          {mode === ADD && <ListItem>{inputField}</ListItem>}
         </List>
+        {mode === ADD && <ListItem>{inputField}</ListItem>}
       </DialogContent>
       {mode !== VIEW && (
         <DialogActions>
-          <Button onClick={handleCancel}>取消</Button>
+          <Button
+            onClick={handleCancel}
+            onMouseDown={(e) => e.preventDefault()} // 為了阻止input field的onblur被觸發而導致的驗證失敗提示出現
+          >
+            取消
+          </Button>
           <Button onClick={handleSubmit} disabled={isValidationError}>
             確定
           </Button>

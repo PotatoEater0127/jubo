@@ -20,9 +20,7 @@ export default function PatientList({ onItemClick }) {
       <List>
         {patients.map((patient) => (
           <ListItem key={patient?.id} disablePadding>
-            <ListItemButton
-              onClick={() => onItemClick({ patientId: patient?.id })}
-            >
+            <ListItemButton onClick={() => onItemClick(patient)}>
               <ListItemIcon>
                 <FaceIcon />
               </ListItemIcon>

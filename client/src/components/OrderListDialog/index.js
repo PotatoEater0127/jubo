@@ -71,6 +71,49 @@ export default function OrderListDialog(props) {
     />
   );
 
+  const listItems = orders.map((order) => (
+    <ListItem
+      button
+      key={order.id}
+      secondaryAction={
+        mode === VIEW && (
+          <IconButton
+            onClick={() => {
+              setMode(EDIT);
+              setOrderId(order.id);
+              setOrderMessage(order.message);
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        )
+      }
+    >
+      {/* 編輯的時候變成可輸入欄位 */}
+      {mode === EDIT && orderId === order.id ? (
+        inputField
+      ) : (
+        <ListItemText
+          primary={order.message}
+          sx={{ overflow: "hidden", mr: "16px" }}
+        />
+      )}
+    </ListItem>
+  ));
+
+  const loadingBlock = (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth={true}>
       <DialogTitle>
@@ -87,47 +130,7 @@ export default function OrderListDialog(props) {
       </DialogTitle>
       <DialogContent>
         <List sx={{ pt: 0, overflow: "scroll", height: "50vh" }}>
-          {loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            orders.map((order) => (
-              <ListItem
-                button
-                key={order.id}
-                secondaryAction={
-                  mode === VIEW && (
-                    <IconButton
-                      onClick={() => {
-                        setMode(EDIT);
-                        setOrderId(order.id);
-                        setOrderMessage(order.message);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  )
-                }
-              >
-                {mode === EDIT && orderId === order.id ? (
-                  inputField
-                ) : (
-                  <ListItemText
-                    primary={order.message}
-                    sx={{ overflow: "hidden", mr: "16px" }}
-                  />
-                )}
-              </ListItem>
-            ))
-          )}
+          {loading ? loadingBlock : listItems}
         </List>
         {mode === ADD && <ListItem>{inputField}</ListItem>}
       </DialogContent>

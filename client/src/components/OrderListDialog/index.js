@@ -12,11 +12,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import TextField from "@mui/material/TextField";
 import modeEnum from "./modeEnum";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const { VIEW, EDIT, ADD } = modeEnum;
 
 export default function OrderListDialog(props) {
-  const { title, onClose, onSubmit, isOpen, orders } = props;
+  const { title, onClose, onSubmit, isOpen, loading, orders } = props;
   // 目前選取到的醫囑id
   const [orderId, setOrderId] = useState(null);
   const [mode, setMode] = useState(VIEW);
@@ -85,34 +87,47 @@ export default function OrderListDialog(props) {
       </DialogTitle>
       <DialogContent>
         <List sx={{ pt: 0, overflow: "scroll", height: "50vh" }}>
-          {orders.map((order) => (
-            <ListItem
-              button
-              key={order.id}
-              secondaryAction={
-                mode === VIEW && (
-                  <IconButton
-                    onClick={() => {
-                      setMode(EDIT);
-                      setOrderId(order.id);
-                      setOrderMessage(order.message);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                )
-              }
+          {loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
             >
-              {mode === EDIT && orderId === order.id ? (
-                inputField
-              ) : (
-                <ListItemText
-                  primary={order.message}
-                  sx={{ overflow: "hidden", mr: "16px" }}
-                />
-              )}
-            </ListItem>
-          ))}
+              <CircularProgress />
+            </Box>
+          ) : (
+            orders.map((order) => (
+              <ListItem
+                button
+                key={order.id}
+                secondaryAction={
+                  mode === VIEW && (
+                    <IconButton
+                      onClick={() => {
+                        setMode(EDIT);
+                        setOrderId(order.id);
+                        setOrderMessage(order.message);
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  )
+                }
+              >
+                {mode === EDIT && orderId === order.id ? (
+                  inputField
+                ) : (
+                  <ListItemText
+                    primary={order.message}
+                    sx={{ overflow: "hidden", mr: "16px" }}
+                  />
+                )}
+              </ListItem>
+            ))
+          )}
         </List>
         {mode === ADD && <ListItem>{inputField}</ListItem>}
       </DialogContent>

@@ -15,7 +15,7 @@ const app = express();
 const dbPath = process.env.MONGO_URI || "mongodb://localhost:27017/jubo";
 mongoose
   .connect(dbPath)
-  .then(() => console.log(`db connect success: ${dbPath}`))
+  .then((e) => console.log(e, `db connect success: ${dbPath}`))
   .catch((err) => console.log(err));
 
 // view engine setup

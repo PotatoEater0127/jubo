@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 function App() {
   const openId = useRef(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOrderLoading, setIsOrderLoading] = useState(false);
   const [patient, setPatient] = useState(null);
   const [orders, setOrders] = useState([]);
   useEffect(() => {
@@ -26,14 +27,19 @@ function App() {
   const handleListItemClick = (patient) => {
     setIsOpen(true);
     setPatient(patient);
+    setIsOrderLoading(true);
     axios
       .get(`/patients/${patient.id}/orders`)
       .then((res) => res.data)
-      .then((orders) => setOrders(orders));
+      .then((orders) => {
+        setOrders(orders);
+        setIsOrderLoading(false);
+      });
   };
 
   const handleSubmit = async ({ mode, message, orderId }) => {
     let request = Promise.resolve();
+    setIsOrderLoading(true);
     if (mode === modeEnum.ADD) {
       // 新增醫囑
       request = axios.post("/orders", { message, patientId: patient?.id });
@@ -47,7 +53,10 @@ function App() {
       axios
         .get(`/patients/${patient?.id}/orders`)
         .then((res) => res.data)
-        .then((orders) => setOrders(orders))
+        .then((orders) => {
+          setOrders(orders);
+          setIsOrderLoading(false);
+        })
     );
   };
 
@@ -75,6 +84,7 @@ function App() {
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             onSubmit={handleSubmit}
+            loading={isOrderLoading}
             title={`醫囑列表 - ${patient?.name}`}
           />
         </Paper>
